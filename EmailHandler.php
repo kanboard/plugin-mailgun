@@ -2,9 +2,12 @@
 
 namespace Kanboard\Plugin\Mailgun;
 
+require_once __DIR__.'/vendor/autoload.php';
+
 use Kanboard\Core\Base;
 use Kanboard\Core\Tool;
 use Kanboard\Core\Mail\ClientInterface;
+use League\HTMLToMarkdown\HtmlConverter;
 
 defined('MAILGUN_API_TOKEN') or define('MAILGUN_API_TOKEN', '');
 defined('MAILGUN_DOMAIN') or define('MAILGUN_DOMAIN', '');
@@ -80,7 +83,8 @@ class EmailHandler extends Base implements ClientInterface
 
         // Get the Markdown contents
         if (! empty($payload['stripped-html'])) {
-            $description = $this->htmlConverter->convert($payload['stripped-html']);
+            $htmlConverter = new HtmlConverter(array('strip_tags' => true));
+            $description = $htmlConverter->convert($payload['stripped-html']);
         }
         else if (! empty($payload['stripped-text'])) {
             $description = $payload['stripped-text'];

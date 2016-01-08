@@ -1,0 +1,19 @@
+{
+    "name": "kanboard/plugin-mailgun",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Frédéric Guillot"
+        }
+    ],
+    "config": {
+        "preferred-install": "dist",
+        "optimize-autoloader": true,
+        "discard-changes": true
+    },
+    "require" : {
+        "php" : ">=5.3",
+        "league/html-to-markdown" : "~4.0"
+    }
+}

@@ -6,8 +6,9 @@ use Kanboard\Plugin\Mailgun\EmailHandler;
 use Kanboard\Model\TaskCreation;
 use Kanboard\Model\TaskFinder;
 use Kanboard\Model\Project;
-use Kanboard\Model\ProjectPermission;
+use Kanboard\Model\ProjectUserRole;
 use Kanboard\Model\User;
+use Kanboard\Core\Security\Role;
 
 class EmailHandlerTest extends Base
 {
@@ -35,7 +36,7 @@ class EmailHandlerTest extends Base
     {
         $w = new EmailHandler($this->container);
         $p = new Project($this->container);
-        $pp = new ProjectPermission($this->container);
+        $pp = new ProjectUserRole($this->container);
         $u = new User($this->container);
         $tc = new TaskCreation($this->container);
         $tf = new TaskFinder($this->container);
@@ -56,16 +57,16 @@ class EmailHandlerTest extends Base
 
         // User is not member
         $this->assertFalse($w->receiveEmail(array('sender' => 'me@localhost', 'subject' => 'Email task', 'recipient' => 'foo+test1@localhost', 'stripped-text' => 'boo')));
-        $this->assertTrue($pp->addMember(2, 2));
+        $this->assertTrue($pp->addUser(2, 2, Role::PROJECT_MEMBER));
 
         // The task must be created
-        $this->assertTrue($w->receiveEmail(array('sender' => 'me@localhost', 'subject' => 'Email task', 'recipient' => 'foo+test1@localhost', 'stripped-text' => 'boo')));
+        $this->assertTrue($w->receiveEmail(array('sender' => 'me@localhost', 'subject' => 'Email task', 'recipient' => 'foo+test1@localhost', 'stripped-html' => '<strong>boo</strong>')));
 
         $task = $tf->getById(1);
         $this->assertNotEmpty($task);
         $this->assertEquals(2, $task['project_id']);
         $this->assertEquals('Email task', $task['title']);
-        $this->assertEquals('boo', $task['description']);
+        $this->assertEquals('**boo**', $task['description']);
         $this->assertEquals(2, $task['creator_id']);
     }
 }
