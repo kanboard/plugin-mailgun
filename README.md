@@ -1,5 +1,7 @@
 Mailgun plugin for Kanboard
-============================
+===========================
+
+[![Build Status](https://travis-ci.org/kanboard/plugin-mailgun.svg?branch=master)](https://travis-ci.org/kanboard/plugin-mailgun)
 
 Use [Mailgun](http://www.mailgun.com/) to create tasks directly by email or to send notifications.
 
