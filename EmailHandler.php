@@ -65,6 +65,7 @@ class EmailHandler extends Base implements ClientInterface
             'title' => $this->getTitle($payload),
             'description' => $this->getDescription($payload),
             'creator_id' => $user['id'],
+            'swimlane_id' => $this->getSwimlaneId($project),
         ));
     }
 
@@ -139,6 +140,19 @@ class EmailHandler extends Base implements ClientInterface
         }
 
         return '';
+    }
+
+    /**
+     * Get swimlane id
+     *
+     * @access public
+     * @param  array $project
+     * @return string
+     */
+    public function getSwimlaneId(array $project)
+    {
+        $swimlanes = $this->swimlane->getList($project['id'], false, true);
+        return count($swimlanes) > 0 ? key($swimlanes) : 0;
     }
 
     /**
