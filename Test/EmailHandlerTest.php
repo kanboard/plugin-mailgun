@@ -94,4 +94,20 @@ class EmailHandlerTest extends Base
         $this->assertEquals('**boo**', $task['description']);
         $this->assertEquals(2, $task['creator_id']);
     }
+
+    public function testGetSubject()
+    {
+        $handler = new EmailHandler($this->container);
+        $this->assertEquals('Test', $handler->getTitle(array('subject' => 'Test')));
+        $this->assertEquals('Test', $handler->getTitle(array('subject' => 'RE: Test')));
+        $this->assertEquals('Test', $handler->getTitle(array('subject' => 'FW: Test')));
+    }
+
+    public function testGetDescription()
+    {
+        $handler = new EmailHandler($this->container);
+        $this->assertEquals('**Test**', $handler->getDescription(array('stripped-html' => '<b>Test</b>')));
+        $this->assertEquals('foobar', $handler->getDescription(array('stripped-html' => '', 'stripped-text' => 'foobar')));
+        $this->assertEquals('', $handler->getDescription(array('stripped-html' => '', 'stripped-text' => '')));
+    }
 }

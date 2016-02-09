@@ -52,6 +52,31 @@ class EmailHandler extends Base implements ClientInterface
      */
     public function receiveEmail(array $payload)
     {
+        $result = $this->validate($payload);
+
+        if ($result === false) {
+            return false;
+        }
+
+        list($user, $project) = $result;
+
+        return (bool) $this->taskCreation->create(array(
+            'project_id' => $project['id'],
+            'title' => $this->getTitle($payload),
+            'description' => $this->getDescription($payload),
+            'creator_id' => $user['id'],
+        ));
+    }
+
+    /**
+     * Validate incoming email
+     *
+     * @access public
+     * @param  array $payload
+     * @return array|boolean
+     */
+    public function validate(array $payload)
+    {
         if (empty($payload['sender']) || empty($payload['subject']) || empty($payload['recipient'])) {
             return false;
         }
@@ -60,7 +85,7 @@ class EmailHandler extends Base implements ClientInterface
         $user = $this->user->getByEmail($payload['sender']);
 
         if (empty($user)) {
-            $this->logger->debug('Mailgun: ignored => user not found');
+            $this->logger->info('Mailgun: ignored => user not found');
             return false;
         }
 
@@ -68,33 +93,52 @@ class EmailHandler extends Base implements ClientInterface
         $project = $this->project->getByIdentifier(Tool::getMailboxHash($payload['recipient']));
 
         if (empty($project)) {
-            $this->logger->debug('Mailgun: ignored => project not found');
+            $this->logger->info('Mailgun: ignored => project not found');
             return false;
         }
 
         // The user must be member of the project
         if (! $this->projectPermission->isMember($project['id'], $user['id'])) {
-            $this->logger->debug('Mailgun: ignored => user is not member of the project');
+            $this->logger->info('Mailgun: ignored => user is not member of the project');
             return false;
         }
 
-        // Get the Markdown contents
+        return array($user, $project);
+    }
+
+    /**
+     * Get task title
+     *
+     * @access public
+     * @param  array $payload
+     * @return string
+     */
+    public function getTitle(array $payload)
+    {
+        $title = $payload['subject'];
+        $title = str_replace('RE: ', '', $title);
+        $title = str_replace('FW: ', '', $title);
+
+        return $title;
+    }
+
+    /**
+     * Get Markdown content for the task
+     *
+     * @access public
+     * @param  array $payload
+     * @return string
+     */
+    public function getDescription(array $payload)
+    {
         if (! empty($payload['stripped-html'])) {
             $htmlConverter = new HtmlConverter(array('strip_tags' => true));
-            $description = $htmlConverter->convert($payload['stripped-html']);
+            return $htmlConverter->convert($payload['stripped-html']);
         } elseif (! empty($payload['stripped-text'])) {
-            $description = $payload['stripped-text'];
-        } else {
-            $description = '';
+            return $payload['stripped-text'];
         }
 
-        // Finally, we create the task
-        return (bool) $this->taskCreation->create(array(
-            'project_id' => $project['id'],
-            'title' => $payload['subject'],
-            'description' => $description,
-            'creator_id' => $user['id'],
-        ));
+        return '';
     }
 
     /**
