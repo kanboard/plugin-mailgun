@@ -17,8 +17,9 @@ class Plugin extends Base
     {
         $this->emailClient->setTransport('mailgun', '\Kanboard\Plugin\Mailgun\EmailHandler');
         $this->template->hook->attach('template:config:integrations', 'mailgun:integration');
+        $this->route->addRoute('/mailgun/handler/:token', 'webhook', 'receiver', 'mailgun');
 
-        $this->on('app.bootstrap', function($container) {
+        $this->on('app.bootstrap', function ($container) {
             Translator::load($container['config']->getCurrentLanguage(), __DIR__.'/Locale');
         });
     }

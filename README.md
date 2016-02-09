@@ -39,6 +39,8 @@ define('MAILGUN_DOMAIN', 'YOUR_DOMAIN_CONFIGURED_IN_MAILGUN');
 define('MAIL_FROM', 'sender-address-configured-in-mailgun@example.org');
 ```
 
+You can also define the token is the application settings.
+
 Use Mailgun to create tasks from emails
 ----------------------------------------
 

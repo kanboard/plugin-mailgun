@@ -9,9 +9,6 @@ use Kanboard\Core\Tool;
 use Kanboard\Core\Mail\ClientInterface;
 use League\HTMLToMarkdown\HtmlConverter;
 
-defined('MAILGUN_API_TOKEN') or define('MAILGUN_API_TOKEN', '');
-defined('MAILGUN_DOMAIN') or define('MAILGUN_DOMAIN', '');
-
 /**
  * Mailgun Mail Handler
  *
@@ -33,7 +30,7 @@ class EmailHandler extends Base implements ClientInterface
     public function sendEmail($email, $name, $subject, $html, $author)
     {
         $headers = array(
-            'Authorization: Basic '.base64_encode('api:'.MAILGUN_API_TOKEN)
+            'Authorization: Basic '.base64_encode('api:'.$this->getApiToken())
         );
 
         $payload = array(
@@ -43,7 +40,7 @@ class EmailHandler extends Base implements ClientInterface
             'html' => $html,
         );
 
-        $this->httpClient->postForm('https://api.mailgun.net/v3/'.MAILGUN_DOMAIN.'/messages', $payload, $headers);
+        $this->httpClient->postForm('https://api.mailgun.net/v3/'.$this->getDomain().'/messages', $payload, $headers);
     }
 
     /**
@@ -85,11 +82,9 @@ class EmailHandler extends Base implements ClientInterface
         if (! empty($payload['stripped-html'])) {
             $htmlConverter = new HtmlConverter(array('strip_tags' => true));
             $description = $htmlConverter->convert($payload['stripped-html']);
-        }
-        else if (! empty($payload['stripped-text'])) {
+        } elseif (! empty($payload['stripped-text'])) {
             $description = $payload['stripped-text'];
-        }
-        else {
+        } else {
             $description = '';
         }
 
@@ -100,5 +95,35 @@ class EmailHandler extends Base implements ClientInterface
             'description' => $description,
             'creator_id' => $user['id'],
         ));
+    }
+
+    /**
+     * Get API token
+     *
+     * @access public
+     * @return string
+     */
+    public function getApiToken()
+    {
+        if (defined('MAILGUN_API_TOKEN')) {
+            return MAILGUN_API_TOKEN;
+        }
+
+        return $this->config->get('mailgun_api_token');
+    }
+
+    /**
+     * Get Mailgun domain
+     *
+     * @access public
+     * @return string
+     */
+    public function getDomain()
+    {
+        if (defined('MAILGUN_DOMAIN')) {
+            return MAILGUN_DOMAIN;
+        }
+
+        return $this->config->get('mailgun_domain');
     }
 }

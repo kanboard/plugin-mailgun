@@ -12,24 +12,49 @@ use Kanboard\Core\Security\Role;
 
 class EmailHandlerTest extends Base
 {
+    public function testGetApiToken()
+    {
+        $handler = new EmailHandler($this->container);
+        $this->assertEmpty($handler->getApiToken());
+
+        $this->container['config']->save(array('mailgun_api_token' => 'my token'));
+        $this->container['memoryCache']->flush();
+
+        $this->assertEquals('my token', $handler->getApiToken());
+    }
+
+    public function testGetDomain()
+    {
+        $handler = new EmailHandler($this->container);
+        $this->assertEmpty($handler->getDomain());
+
+        $this->container['config']->save(array('mailgun_domain' => 'my domain'));
+        $this->container['memoryCache']->flush();
+
+        $this->assertEquals('my domain', $handler->getDomain());
+    }
+
     public function testSendEmail()
     {
-        $pm = new EmailHandler($this->container);
-        $pm->sendEmail('test@localhost', 'Me', 'Test', 'Content', 'Bob');
+        $handler = new EmailHandler($this->container);
 
-        $this->assertStringStartsWith('https://api.mailgun.net/v3/', $this->container['httpClient']->getUrl());
+        $headers = array(
+            'Authorization: Basic '.base64_encode('api:my token')
+        );
 
-        $data = $this->container['httpClient']->getData();
+        $this->container['config']
+            ->save(array('mailgun_api_token' => 'my token', 'mailgun_domain' => 'my_domain'));
 
-        $this->assertArrayHasKey('from', $data);
-        $this->assertArrayHasKey('to', $data);
-        $this->assertArrayHasKey('subject', $data);
-        $this->assertArrayHasKey('html', $data);
+        $this->container['httpClient']
+            ->expects($this->once())
+            ->method('postForm')
+            ->with(
+                'https://api.mailgun.net/v3/my_domain/messages',
+                $this->anything(),
+                $headers
+            );
 
-        $this->assertEquals('Me <test@localhost>', $data['to']);
-        $this->assertEquals('Bob <notifications@kanboard.local>', $data['from']);
-        $this->assertEquals('Test', $data['subject']);
-        $this->assertEquals('Content', $data['html']);
+        $handler->sendEmail('test@localhost', 'Me', 'Test', 'Content', 'Bob');
     }
 
     public function testHandlePayload()
