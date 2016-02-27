@@ -67,3 +67,11 @@ The Kanboard webhook url is displayed in **Settings > Integrations > Mailgun**
 3. Try to send an email to your project: something+myproject@mydomain.tld
 
 The sender email address must be same as the user profile in Kanboard and the user must be member of the project.
+
+Notes
+-----
+
+- Task will be created in the first active swimlane
+- Attachments are not supported yet
+- Only email with textual content or simple HTML can be interpreted
+
