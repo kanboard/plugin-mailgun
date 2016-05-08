@@ -8,7 +8,7 @@
     <?= $this->form->label(t('Mailgun domain'), 'mailgun_domain') ?>
     <?= $this->form->text('mailgun_domain', $values) ?>
 
-    <p class="form-help"><a href="https://github.com/kanboard/plugin-mailgun" target="_blank"><?= t('Help on Mailgun integration') ?></a></p>
+    <p class="form-help"><a href="https://kanboard.net/plugin/mailgun" target="_blank"><?= t('Help on Mailgun integration') ?></a></p>
 
     <div class="form-actions">
         <input type="submit" value="<?= t('Save') ?>" class="btn btn-blue"/>
