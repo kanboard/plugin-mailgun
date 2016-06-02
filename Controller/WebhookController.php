@@ -2,7 +2,7 @@
 
 namespace Kanboard\Plugin\Mailgun\Controller;
 
-use Kanboard\Controller\Base;
+use Kanboard\Controller\BaseController;
 use Kanboard\Plugin\Mailgun\EmailHandler;
 
 /**
@@ -11,7 +11,7 @@ use Kanboard\Plugin\Mailgun\EmailHandler;
  * @package  mailgun
  * @author   Frederic Guillot
  */
-class Webhook extends Base
+class WebhookController extends BaseController
 {
     /**
      * Handle Mailgun webhooks
@@ -23,6 +23,6 @@ class Webhook extends Base
         $this->checkWebhookToken();
 
         $handler = new EmailHandler($this->container);
-        echo $handler->receiveEmail($_POST) ? 'PARSED' : 'IGNORED';
+        $this->response->text($handler->receiveEmail($_POST) ? 'PARSED' : 'IGNORED');
     }
 }

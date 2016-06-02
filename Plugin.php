@@ -2,6 +2,7 @@
 
 namespace Kanboard\Plugin\Mailgun;
 
+use Kanboard\Core\Security\Role;
 use Kanboard\Core\Translator;
 use Kanboard\Core\Plugin\Base;
 
@@ -17,12 +18,13 @@ class Plugin extends Base
     {
         $this->emailClient->setTransport('mailgun', '\Kanboard\Plugin\Mailgun\EmailHandler');
         $this->template->hook->attach('template:config:integrations', 'mailgun:integration');
-        $this->route->addRoute('/mailgun/handler/:token', 'webhook', 'receiver', 'mailgun');
+        $this->route->addRoute('/mailgun/handler/:token', 'WebhookController', 'receiver', 'mailgun');
+        $this->applicationAccessMap->add('WebhookController', 'receiver', Role::APP_PUBLIC);
     }
 
     public function onStartup()
     {
-        Translator::load($this->language->getCurrentLanguage(), __DIR__.'/Locale');
+        Translator::load($this->languageModel->getCurrentLanguage(), __DIR__.'/Locale');
     }
 
     public function getPluginDescription()
@@ -37,7 +39,7 @@ class Plugin extends Base
 
     public function getPluginVersion()
     {
-        return '1.0.4';
+        return '1.0.5';
     }
 
     public function getPluginHomepage()

@@ -5,7 +5,6 @@ namespace Kanboard\Plugin\Mailgun;
 require_once __DIR__.'/vendor/autoload.php';
 
 use Kanboard\Core\Base;
-use Kanboard\Core\Tool;
 use Kanboard\Core\Mail\ClientInterface;
 use League\HTMLToMarkdown\HtmlConverter;
 
@@ -60,7 +59,7 @@ class EmailHandler extends Base implements ClientInterface
 
         list($user, $project) = $result;
 
-        return (bool) $this->taskCreation->create(array(
+        return (bool) $this->taskCreationModel->create(array(
             'project_id' => $project['id'],
             'title' => $this->getTitle($payload),
             'description' => $this->getDescription($payload),
@@ -83,7 +82,7 @@ class EmailHandler extends Base implements ClientInterface
         }
 
         // The user must exists in Kanboard
-        $user = $this->user->getByEmail($payload['sender']);
+        $user = $this->userModel->getByEmail($payload['sender']);
 
         if (empty($user)) {
             $this->logger->info('Mailgun: ignored => user not found');
@@ -91,7 +90,7 @@ class EmailHandler extends Base implements ClientInterface
         }
 
         // The project must have a short name
-        $project = $this->project->getByIdentifier(Tool::getMailboxHash($payload['recipient']));
+        $project = $this->projectModel->getByIdentifier($this->helper->mail->getMailboxHash($payload['recipient']));
 
         if (empty($project)) {
             $this->logger->info('Mailgun: ignored => project not found');
@@ -99,7 +98,7 @@ class EmailHandler extends Base implements ClientInterface
         }
 
         // The user must be member of the project
-        if (! $this->projectPermission->isMember($project['id'], $user['id'])) {
+        if (! $this->projectPermissionModel->isMember($project['id'], $user['id'])) {
             $this->logger->info('Mailgun: ignored => user is not member of the project');
             return false;
         }
@@ -116,11 +115,7 @@ class EmailHandler extends Base implements ClientInterface
      */
     public function getTitle(array $payload)
     {
-        $title = $payload['subject'];
-        $title = str_replace('RE: ', '', $title);
-        $title = str_replace('FW: ', '', $title);
-
-        return $title;
+        return $this->helper->mail->filterSubject($payload['subject']);
     }
 
     /**
@@ -151,8 +146,8 @@ class EmailHandler extends Base implements ClientInterface
      */
     public function getSwimlaneId(array $project)
     {
-        $swimlanes = $this->swimlane->getList($project['id'], false, true);
-        return count($swimlanes) > 0 ? key($swimlanes) : 0;
+        $swimlane = $this->swimlaneModel->getFirstActiveSwimlane($project['id']);
+        return empty($swimlane) ? 0 : $swimlane['id'];
     }
 
     /**
@@ -167,7 +162,7 @@ class EmailHandler extends Base implements ClientInterface
             return MAILGUN_API_TOKEN;
         }
 
-        return $this->config->get('mailgun_api_token');
+        return $this->configModel->get('mailgun_api_token');
     }
 
     /**
@@ -182,6 +177,6 @@ class EmailHandler extends Base implements ClientInterface
             return MAILGUN_DOMAIN;
         }
 
-        return $this->config->get('mailgun_domain');
+        return $this->configModel->get('mailgun_domain');
     }
 }

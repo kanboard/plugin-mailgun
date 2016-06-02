@@ -3,11 +3,10 @@
 require_once 'tests/units/Base.php';
 
 use Kanboard\Plugin\Mailgun\EmailHandler;
-use Kanboard\Model\TaskCreation;
-use Kanboard\Model\TaskFinder;
-use Kanboard\Model\Project;
-use Kanboard\Model\ProjectUserRole;
-use Kanboard\Model\User;
+use Kanboard\Model\TaskFinderModel;
+use Kanboard\Model\ProjectModel;
+use Kanboard\Model\ProjectUserRoleModel;
+use Kanboard\Model\UserModel;
 use Kanboard\Core\Security\Role;
 
 class EmailHandlerTest extends Base
@@ -17,7 +16,7 @@ class EmailHandlerTest extends Base
         $handler = new EmailHandler($this->container);
         $this->assertEmpty($handler->getApiToken());
 
-        $this->container['config']->save(array('mailgun_api_token' => 'my token'));
+        $this->container['configModel']->save(array('mailgun_api_token' => 'my token'));
         $this->container['memoryCache']->flush();
 
         $this->assertEquals('my token', $handler->getApiToken());
@@ -28,7 +27,7 @@ class EmailHandlerTest extends Base
         $handler = new EmailHandler($this->container);
         $this->assertEmpty($handler->getDomain());
 
-        $this->container['config']->save(array('mailgun_domain' => 'my domain'));
+        $this->container['configModel']->save(array('mailgun_domain' => 'my domain'));
         $this->container['memoryCache']->flush();
 
         $this->assertEquals('my domain', $handler->getDomain());
@@ -42,7 +41,7 @@ class EmailHandlerTest extends Base
             'Authorization: Basic '.base64_encode('api:my token')
         );
 
-        $this->container['config']
+        $this->container['configModel']
             ->save(array('mailgun_api_token' => 'my token', 'mailgun_domain' => 'my_domain'));
 
         $this->container['httpClient']
@@ -60,11 +59,10 @@ class EmailHandlerTest extends Base
     public function testHandlePayload()
     {
         $w = new EmailHandler($this->container);
-        $p = new Project($this->container);
-        $pp = new ProjectUserRole($this->container);
-        $u = new User($this->container);
-        $tc = new TaskCreation($this->container);
-        $tf = new TaskFinder($this->container);
+        $p = new ProjectModel($this->container);
+        $pp = new ProjectUserRoleModel($this->container);
+        $u = new UserModel($this->container);
+        $tf = new TaskFinderModel($this->container);
 
         $this->assertEquals(2, $u->create(array('username' => 'me', 'email' => 'me@localhost')));
 
