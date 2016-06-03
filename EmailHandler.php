@@ -33,7 +33,7 @@ class EmailHandler extends Base implements ClientInterface
         );
 
         $payload = array(
-            'from' => sprintf('%s <%s>', $author, MAIL_FROM),
+            'from' => sprintf('%s <%s>', $author, $this->helper->mail->getMailSenderAddress()),
             'to' => sprintf('%s <%s>', $name, $email),
             'subject' => $subject,
             'html' => $html,
