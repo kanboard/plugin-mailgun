@@ -46,7 +46,7 @@ class EmailHandlerTest extends Base
 
         $this->container['httpClient']
             ->expects($this->once())
-            ->method('postForm')
+            ->method('postFormAsync')
             ->with(
                 'https://api.mailgun.net/v3/my_domain/messages',
                 $this->anything(),
