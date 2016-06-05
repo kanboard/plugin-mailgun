@@ -14,6 +14,12 @@ Author
 - Frederic Guillot
 - License MIT
 
+Requirements
+------------
+
+- Kanboard >= 1.0.29
+- Mailgun API credentials
+
 Installation
 ------------
 
@@ -27,6 +33,13 @@ Note: Plugin folder is case-sensitive.
 
 Use Mailgun to send emails
 ---------------------------
+
+### Use the user interface
+
+- Set the API credentials in **Settings > Integrations > Mailgun**
+- Set the mail transport in **Settings > Email Settings**
+
+### Use the config file
 
 Define those constants in your `config.php` file to send notifications with Mailgun:
 
@@ -43,8 +56,6 @@ define('MAILGUN_DOMAIN', 'YOUR_DOMAIN_CONFIGURED_IN_MAILGUN');
 // Be sure to use the sender email address configured in Mailgun
 define('MAIL_FROM', 'sender-address-configured-in-mailgun@example.org');
 ```
-
-You can also define the token is the application settings.
 
 Use Mailgun to create tasks from emails
 ----------------------------------------
