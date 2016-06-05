@@ -39,7 +39,7 @@ class EmailHandler extends Base implements ClientInterface
             'html' => $html,
         );
 
-        $this->httpClient->postForm('https://api.mailgun.net/v3/'.$this->getDomain().'/messages', $payload, $headers);
+        $this->httpClient->postFormAsync('https://api.mailgun.net/v3/'.$this->getDomain().'/messages', $payload, $headers);
     }
 
     /**
