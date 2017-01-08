@@ -1,5 +1,5 @@
 <h3><img src="<?= $this->url->dir() ?>plugins/Mailgun/mailgun-icon.png"/>&nbsp;Mailgun</h3>
-<div class="listing">
+<div class="panel">
     <input type="text" class="auto-select" readonly="readonly" value="<?= $this->url->href('WebhookController', 'receiver', array('plugin' => 'mailgun', 'token' => $values['webhook_token']), false, '', true) ?>">
 
     <?= $this->form->label(t('Mailgun API token'), 'mailgun_api_token') ?>
