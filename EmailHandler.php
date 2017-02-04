@@ -62,12 +62,13 @@ class EmailHandler extends Base implements ClientInterface
         $taskId = $this->taskCreationModel->create(array(
             'project_id' => $project['id'],
             'title' => $this->getTitle($payload),
-            'description' => $this->getDescription($payload),
+            'description' => trim($this->getDescription($payload)),
             'creator_id' => $user['id'],
             'swimlane_id' => $this->getSwimlaneId($project),
         ));
 
         if ($taskId > 0) {
+            $this->addEmailBodyAsAttachment($taskId, $payload);
             $this->uploadAttachments($taskId, $payload);
             return true;
         }
@@ -217,6 +218,23 @@ class EmailHandler extends Base implements ClientInterface
             } catch (Exception $e) {
                 $this->logger->error($e->getMessage());
             }
+        }
+    }
+
+    protected function addEmailBodyAsAttachment($taskId, array $payload)
+    {
+        $filename = t('Email') . '.txt';
+        $data = '';
+
+        if (! empty($payload['body-html'])) {
+            $data = $payload['body-html'];
+            $filename = t('Email') . '.html';
+        } elseif (! empty($payload['body-plain'])) {
+            $data = $payload['body-plain'];
+        }
+
+        if (! empty($data)) {
+            $this->taskFileModel->uploadContent($taskId, $filename, $data, false);
         }
     }
 }

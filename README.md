@@ -113,5 +113,6 @@ Changes
 
 ### Version 1.0.7
 
+- Add original email body as attachment
 - Add support for attachments
 - Use project email address instead of project identifier (Kanboard >=1.0.39)
