@@ -9,6 +9,7 @@ return array(
     'League\\HTMLToMarkdown\\Configuration' => $vendorDir . '/league/html-to-markdown/src/Configuration.php',
     'League\\HTMLToMarkdown\\ConfigurationAwareInterface' => $vendorDir . '/league/html-to-markdown/src/ConfigurationAwareInterface.php',
     'League\\HTMLToMarkdown\\Converter\\BlockquoteConverter' => $vendorDir . '/league/html-to-markdown/src/Converter/BlockquoteConverter.php',
+    'League\\HTMLToMarkdown\\Converter\\CodeConverter' => $vendorDir . '/league/html-to-markdown/src/Converter/CodeConverter.php',
     'League\\HTMLToMarkdown\\Converter\\CommentConverter' => $vendorDir . '/league/html-to-markdown/src/Converter/CommentConverter.php',
     'League\\HTMLToMarkdown\\Converter\\ConverterInterface' => $vendorDir . '/league/html-to-markdown/src/Converter/ConverterInterface.php',
     'League\\HTMLToMarkdown\\Converter\\DefaultConverter' => $vendorDir . '/league/html-to-markdown/src/Converter/DefaultConverter.php',

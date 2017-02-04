@@ -4,6 +4,62 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 
 ## [Unreleased][unreleased]
 
+## [4.4.0]
+
+### Added
+ - Added `hard_break` configuration option (#112, #115)
+ - The `HtmlConverter` can now be instantiated with an `Environment` (#118)
+
+### Fixed
+ - Fixed handling of paragraphs in list item elements (#47, #110)
+ - Fixed phantom spaces when newlines follow `br` elements (#116, #117)
+ - Fixed link converter not sanitizing inner spaces properly (#119, #120)
+
+## [4.3.1]
+### Changed
+ - Revised the sanitization implementation (#109)
+
+### Fixed
+ - Fixed tag-like content not being escaped (#67, #109)
+ - Fixed thematic break-like content not being escaped (#65, #109)
+ - Fixed codefence-like content not being escaped (#64, #109)
+
+## [4.3.0]
+### Added
+ - Added full support for PHP 7.0 and 7.1
+
+### Changed
+ - Changed `<pre>` and `<pre><code>` conversions to use backticks instead of indendation (#102)
+
+### Fixed
+ - Fixed issue where specified code language was not preserved (#70, #102)
+ - Fixed issue where `<code>` tags nested in `<pre>` was not converted properly (#70, #102)
+ - Fixed header-like content not being escaped (#76, #105)
+ - Fixed blockquote-like content not being escaped (#77, #103)
+ - Fixed ordered list-like content not being escaped (#73, #106)
+ - Fixed unordered list-like content not being escaped (#71, #107)
+
+## [4.2.2]
+### Fixed
+ - Fixed sanitization bug which sometimes removes desired content (#63, #101)
+
+## [4.2.1]
+### Fixed
+ - Fixed path to autoload.php when used as a library (#98)
+ - Fixed edge case for tags containing only whitespace (#99)
+
+### Removed
+ - Removed double HTML entity decoding, as this is not desireable (#60)
+
+## [4.2.0]
+
+### Added
+ - Added the ability to invoke HtmlConverter objects as functions (#85)
+
+### Fixed
+ - Fixed improper handling of nested list items (#19 and #84)
+ - Fixed preceeding or trailing spaces within emphasis tags (#83)
+
 ## [4.1.1]
 
 ### Fixed
@@ -127,7 +183,13 @@ not ideally set, so this releases fixes that. Moving forwards this should reduce
 ### Added
  - Initial release
 
-[unreleased]: https://github.com/thephpleague/html-to-markdown/compare/4.1.1...master
+[unreleased]: https://github.com/thephpleague/html-to-markdown/compare/4.4.0...master
+[4.4.0]: https://github.com/thephpleague/html-to-markdown/compare/4.3.1...4.4.0
+[4.3.1]: https://github.com/thephpleague/html-to-markdown/compare/4.3.0...4.3.1
+[4.3.0]: https://github.com/thephpleague/html-to-markdown/compare/4.2.2...4.3.0
+[4.2.2]: https://github.com/thephpleague/html-to-markdown/compare/4.2.1...4.2.2
+[4.2.1]: https://github.com/thephpleague/html-to-markdown/compare/4.2.0...4.2.1
+[4.2.0]: https://github.com/thephpleague/html-to-markdown/compare/4.1.1...4.2.0
 [4.1.1]: https://github.com/thephpleague/html-to-markdown/compare/4.1.0...4.1.1
 [4.1.0]: https://github.com/thephpleague/html-to-markdown/compare/4.0.1...4.1.0
 [4.0.1]: https://github.com/thephpleague/html-to-markdown/compare/4.0.0...4.0.1
