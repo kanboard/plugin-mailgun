@@ -90,7 +90,7 @@ class EmailHandler extends Base implements ClientInterface
         }
 
         // The project must have a short name
-        $project = $this->projectModel->getByIdentifier($this->helper->mail->getMailboxHash($payload['recipient']));
+        $project = $this->projectModel->getByEmail($payload['recipient']);
 
         if (empty($project)) {
             $this->logger->info('Mailgun: ignored => project not found');
@@ -98,7 +98,7 @@ class EmailHandler extends Base implements ClientInterface
         }
 
         // The user must be member of the project
-        if (! $this->projectPermissionModel->isMember($project['id'], $user['id'])) {
+        if (! $this->projectPermissionModel->isAssignable($project['id'], $user['id'])) {
             $this->logger->info('Mailgun: ignored => user is not member of the project');
             return false;
         }

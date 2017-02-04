@@ -17,7 +17,7 @@ Author
 Requirements
 ------------
 
-- Kanboard >= 1.0.37
+- Kanboard >= 1.0.39
 - Mailgun API credentials
 
 Installation
@@ -53,7 +53,7 @@ Set the mail transport in **Settings > Email Settings**:
 1. Define an authorized email sender (an email address with the same domain as the one registered in Mailgun)
 2. Select "Mailgun" as mail transport and save
 
-### Use the config file
+### Use the config file (alternative method)
 
 Define those constants in your `config.php` file to send notifications with Mailgun:
 
@@ -79,33 +79,25 @@ Kanboard use a webhook to handle incoming emails.
 
 ### Mailgun configuration
 
-Create a new route in the web interface or via the API ([official documentation](https://documentation.mailgun.com/user_manual.html#routes)), here an example:
+Create a new route in Mailgun control panel:
 
-Example of rule:
+![Mailgun Route](https://cloud.githubusercontent.com/assets/323546/22621567/c7158a4e-eaf4-11e6-8d12-6e102e84c2f8.png)
 
-```
-match_recipient("^kanboard\+(.*)@mydomain.tld$")
-forward("http://my_kanboard_domain.tld/mailgun/handler/a7b561a8c48ebb9d8bffc48a465587767bffa0dc42d1f4ee11efb4c2d1fb")
-```
+1. Select "Match recipient" for expression type
+2. In the recipient field, enter the email address of the Kanboard project
+3. In the action field, copy and paste the Mailgun Webhook URL from Kanboard
 
-![mailgun-config](https://cloud.githubusercontent.com/assets/323546/16546260/b5fcefb8-4112-11e6-8ef7-de3899157cc1.png)
+The Mailgun webhook url is displayed in **Settings > Integrations > Mailgun**.
 
-This example says: All emails likes `kanboard+myproject1@mydomain.tld` or `kanboard+myproject2@mydomain.tld` will be forwarded to the URL specified.
-
-![mailgun-kanboard-settings](https://cloud.githubusercontent.com/assets/323546/16546189/b49c90d0-4110-11e6-8e08-6d3bd5ed992b.png)
-
-The Kanboard webhook url is displayed in **Settings > Integrations > Mailgun**.
 Make sure your application URL is correctly defined otherwise the generated URL will be wrong.
 
 ### Kanboard configuration
 
-You must define a project identifier:
+You must define an email address for your project:
 
-![mailgun-project-setttings](https://cloud.githubusercontent.com/assets/323546/16546282/d0ea805a-4113-11e6-857c-c0dff38ad401.png)
+![Project Settings](https://cloud.githubusercontent.com/assets/323546/22621584/2bd9eaf6-eaf5-11e6-9510-258b1c84300b.png)
 
-All emails sent to `kanboard+myproject@mydomain.tld` will be created into the defined project. 
-
-1. Make sure that your users have an email address in their profiles
+1. Set an email address for your project (in Edit Project)
 2. The sender email address must be same as the user profile in Kanboard
 3. The user must be member of the project
 
@@ -115,5 +107,5 @@ Notes
 - Make sure the application url is defined correctly in application settings
 - Task will be created in the first active swimlane
 - Attachments are not supported yet
-- Only email with textual content or simple HTML can be interpreted because the content is converted in Markdown
+- Only email with textual content or simple HTML can be interpreted because the content is converted in Markdown by the plugin
 
