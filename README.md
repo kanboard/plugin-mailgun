@@ -106,6 +106,12 @@ Notes
 
 - Make sure the application url is defined correctly in application settings
 - Task will be created in the first active swimlane
-- Attachments are not supported yet
 - Only email with textual content or simple HTML can be interpreted because the content is converted in Markdown by the plugin
 
+Changes
+-------
+
+### Version 1.0.7
+
+- Add support for attachments
+- Use project email address instead of project identifier (Kanboard >=1.0.39)

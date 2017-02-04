@@ -4,6 +4,7 @@ namespace Kanboard\Plugin\Mailgun;
 
 require_once __DIR__.'/vendor/autoload.php';
 
+use Exception;
 use Kanboard\Core\Base;
 use Kanboard\Core\Mail\ClientInterface;
 use League\HTMLToMarkdown\HtmlConverter;
@@ -52,20 +53,26 @@ class EmailHandler extends Base implements ClientInterface
     public function receiveEmail(array $payload)
     {
         $result = $this->validate($payload);
-
         if ($result === false) {
             return false;
         }
 
         list($user, $project) = $result;
 
-        return (bool) $this->taskCreationModel->create(array(
+        $taskId = $this->taskCreationModel->create(array(
             'project_id' => $project['id'],
             'title' => $this->getTitle($payload),
             'description' => $this->getDescription($payload),
             'creator_id' => $user['id'],
             'swimlane_id' => $this->getSwimlaneId($project),
         ));
+
+        if ($taskId > 0) {
+            $this->uploadAttachments($taskId, $payload);
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -178,5 +185,27 @@ class EmailHandler extends Base implements ClientInterface
         }
 
         return $this->configModel->get('mailgun_domain');
+    }
+
+    protected function uploadAttachments($taskId, array $payload)
+    {
+        if (isset($payload['attachment-count']) && $payload['attachment-count'] > 0) {
+            for ($i = 1; $i <= $payload['attachment-count']; $i++) {
+                $this->uploadAttachment($taskId, 'attachment-' . $i);
+            }
+        }
+    }
+
+    protected function uploadAttachment($taskId, $name)
+    {
+        $fileInfo = $this->request->getFileInfo($name);
+
+        if (! empty($fileInfo)) {
+            try {
+                $this->taskFileModel->uploadFile($taskId, $fileInfo);
+            } catch (Exception $e) {
+                $this->logger->error($e->getMessage());
+            }
+        }
     }
 }
