@@ -105,7 +105,7 @@ Notes
 -----
 
 - Make sure the application url is defined correctly in application settings
-- Task will be created in the first active swimlane
+- Tasks will be created in the first active swimlane
 - Only email with textual content or simple HTML can be interpreted because the content is converted in Markdown by the plugin
 
 Changes
