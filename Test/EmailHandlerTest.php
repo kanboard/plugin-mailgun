@@ -105,7 +105,7 @@ class EmailHandlerTest extends Base
     {
         $handler = new EmailHandler($this->container);
         $this->assertEquals('**Test**', $handler->getDescription(array('stripped-html' => '<b>Test</b>')));
-        $this->assertEquals('foobar', $handler->getDescription(array('stripped-html' => '', 'stripped-text' => 'foobar')));
-        $this->assertEquals('', $handler->getDescription(array('stripped-html' => '', 'stripped-text' => '')));
+        $this->assertEquals('foobar', $handler->getDescription(array('stripped-html' => '', 'body-plain' => 'foobar')));
+        $this->assertEquals('', $handler->getDescription(array('stripped-html' => '', 'body-plain' => '')));
     }
 }

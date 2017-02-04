@@ -135,10 +135,21 @@ class EmailHandler extends Base implements ClientInterface
     public function getDescription(array $payload)
     {
         if (! empty($payload['stripped-html'])) {
-            $htmlConverter = new HtmlConverter(array('strip_tags' => true));
-            return $htmlConverter->convert($payload['stripped-html']);
-        } elseif (! empty($payload['stripped-text'])) {
-            return $payload['stripped-text'];
+            $htmlConverter = new HtmlConverter(array(
+                'strip_tags'   => true,
+                'remove_nodes' => 'meta script style link img span',
+            ));
+
+            $markdown = $htmlConverter->convert($payload['stripped-html']);
+
+            // Document parsed incorrectly
+            if (strpos($markdown, 'html') !== false && ! empty($payload['body-plain'])) {
+                return $payload['body-plain'];
+            }
+
+            return $markdown;
+        } elseif (! empty($payload['body-plain'])) {
+            return $payload['body-plain'];
         }
 
         return '';
