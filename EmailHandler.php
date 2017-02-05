@@ -141,14 +141,7 @@ class EmailHandler extends Base implements ClientInterface
                 'remove_nodes' => 'meta script style link img span',
             ));
 
-            $markdown = $htmlConverter->convert($payload['stripped-html']);
-
-            // Document parsed incorrectly
-            if (strpos($markdown, 'html') !== false && ! empty($payload['body-plain'])) {
-                return $payload['body-plain'];
-            }
-
-            return $markdown;
+            return $htmlConverter->convert($payload['stripped-html']);
         } elseif (! empty($payload['body-plain'])) {
             return $payload['body-plain'];
         }
