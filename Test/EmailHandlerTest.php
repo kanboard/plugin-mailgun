@@ -56,6 +56,29 @@ class EmailHandlerTest extends Base
         $handler->sendEmail('test@localhost', 'Me', 'Test', 'Content', 'Bob');
     }
 
+    public function testSendEmailWithAuthorEmail()
+    {
+        $handler = new EmailHandler($this->container);
+
+        $headers = array(
+            'Authorization: Basic '.base64_encode('api:my token')
+        );
+
+        $this->container['configModel']
+            ->save(array('mailgun_api_token' => 'my token', 'mailgun_domain' => 'my_domain'));
+
+        $this->container['httpClient']
+            ->expects($this->once())
+            ->method('postFormAsync')
+            ->with(
+                'https://api.mailgun.net/v3/my_domain/messages',
+                $this->contains('bob@localhost'),
+                $headers
+            );
+
+        $handler->sendEmail('test@localhost', 'Me', 'Test', 'Content', 'Bob', 'bob@localhost');
+    }
+
     public function testHandlePayload()
     {
         $emailHandler = new EmailHandler($this->container);

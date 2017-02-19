@@ -17,7 +17,7 @@ Author
 Requirements
 ------------
 
-- Kanboard >= 1.0.39
+- Kanboard >= 1.0.40
 - Mailgun API credentials
 
 Installation
@@ -110,6 +110,10 @@ Notes
 
 Changes
 -------
+
+### Version 1.0.8
+
+- Add support for Reply-To header
 
 ### Version 1.0.7
 

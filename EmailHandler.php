@@ -21,24 +21,29 @@ class EmailHandler extends Base implements ClientInterface
      * Send a HTML email
      *
      * @access public
-     * @param  string  $email
-     * @param  string  $name
+     * @param  string  $recipientEmail
+     * @param  string  $recipientName
      * @param  string  $subject
      * @param  string  $html
-     * @param  string  $author
+     * @param  string  $authorName
+     * @param  string  $authorEmail
      */
-    public function sendEmail($email, $name, $subject, $html, $author)
+    public function sendEmail($recipientEmail, $recipientName, $subject, $html, $authorName, $authorEmail = '')
     {
         $headers = array(
             'Authorization: Basic '.base64_encode('api:'.$this->getApiToken())
         );
 
         $payload = array(
-            'from' => sprintf('%s <%s>', $author, $this->helper->mail->getMailSenderAddress()),
-            'to' => sprintf('%s <%s>', $name, $email),
+            'from' => sprintf('%s <%s>', $authorName, $this->helper->mail->getMailSenderAddress()),
+            'to' => sprintf('%s <%s>', $recipientName, $recipientEmail),
             'subject' => $subject,
             'html' => $html,
         );
+
+        if (! empty($authorEmail)) {
+            $payload['h:Reply-To'] = $authorEmail;
+        }
 
         $this->httpClient->postFormAsync('https://api.mailgun.net/v3/'.$this->getDomain().'/messages', $payload, $headers);
     }
