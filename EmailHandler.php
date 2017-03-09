@@ -69,6 +69,7 @@ class EmailHandler extends Base implements ClientInterface
             'title' => $this->getTitle($payload),
             'description' => trim($this->getDescription($payload)),
             'creator_id' => $user['id'],
+			'owner_id' => $user['id'], // Based on the idea that tasks cannot be orphans, assign it to the creator
             'swimlane_id' => $this->getSwimlaneId($project),
         ));
 
