@@ -111,6 +111,10 @@ Notes
 Changes
 -------
 
+### Version 1.0.9
+
+- Tasks created by incoming email are assigned to the recipient
+
 ### Version 1.0.8
 
 - Add support for Reply-To header
