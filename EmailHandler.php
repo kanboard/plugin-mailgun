@@ -65,11 +65,11 @@ class EmailHandler extends Base implements ClientInterface
         list($user, $project) = $result;
 
         $taskId = $this->taskCreationModel->create(array(
-            'project_id' => $project['id'],
-            'title' => $this->getTitle($payload),
+            'project_id'  => $project['id'],
+            'title'       => $this->getTitle($payload),
             'description' => trim($this->getDescription($payload)),
-            'creator_id' => $user['id'],
-			'owner_id' => $user['id'], // Based on the idea that tasks cannot be orphans, assign it to the creator
+            'creator_id'  => $user['id'],
+            'owner_id'    => $user['id'],
             'swimlane_id' => $this->getSwimlaneId($project),
         ));
 
