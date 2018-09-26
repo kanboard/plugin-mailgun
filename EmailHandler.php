@@ -95,19 +95,26 @@ class EmailHandler extends Base implements ClientInterface
             return false;
         }
 
-        // The user must exists in Kanboard
-        $user = $this->userModel->getByEmail($payload['sender']);
-
-        if (empty($user)) {
-            $this->logger->info('Mailgun: ignored => user not found');
-            return false;
-        }
-
         // The project must have a short name
+        //    DMM: Moved project check in front of user check - to support project unknown user mappings
         $project = $this->projectModel->getByEmail($payload['recipient']);
 
         if (empty($project)) {
             $this->logger->info('Mailgun: ignored => project not found');
+            return false;
+        }
+
+        // The user must exists in Kanboard
+        $user = $this->userModel->getByEmail($payload['sender']);
+
+	// Check to see if a catchall user was specified - if the original sender is unrecognized
+	if (empty($user)) {
+            $user_override = $this->projectMetadataModel->get($project['id'], 'MailgunProject_catchall'); //Find the catchall user E-Mail address
+            $user = $this->userModel->getByEmail($user_override); //Load the user data for the catch all user
+	}
+
+        if (empty($user)) {
+            $this->logger->info('Mailgun: ignored => user not found');
             return false;
         }
 

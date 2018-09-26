@@ -17,6 +17,7 @@ class Plugin extends Base
     public function initialize()
     {
         $this->emailClient->setTransport('mailgun', '\Kanboard\Plugin\Mailgun\EmailHandler');
+        $this->template->hook->attach('template:project:integrations', 'mailgun:config/mailgun_id_mapping');
         $this->template->hook->attach('template:config:integrations', 'mailgun:config/integration');
         $this->route->addRoute('/mailgun/handler/:token', 'WebhookController', 'receiver', 'mailgun');
         $this->applicationAccessMap->add('WebhookController', 'receiver', Role::APP_PUBLIC);
