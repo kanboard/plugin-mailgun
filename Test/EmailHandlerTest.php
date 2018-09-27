@@ -106,6 +106,7 @@ class EmailHandlerTest extends Base
         $this->assertFalse($emailHandler->receiveEmail(array('sender' => 'a@b.c', 'subject' => 'Email task', 'recipient' => 'foobar', 'stripped-text' => 'boo')));
 
         // Unknown sender mapped to known user in project test4
+        $projectUserRoleModel->addUser(3, 3, Role::PROJECT_MEMBER);
         $this->assertTrue($emailHandler->receiveEmail(array('sender' => 'd@e.f', 'subject' => 'Email task', 'recipient' => 'test4@localhost', 'stripped-text' => 'boo')));
 
         // Project not found
