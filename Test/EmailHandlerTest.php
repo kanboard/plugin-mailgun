@@ -86,6 +86,7 @@ class EmailHandlerTest extends Base
         $projectUserRoleModel = new ProjectUserRoleModel($this->container);
         $userModel = new UserModel($this->container);
         $taskFinderModel = new TaskFinderModel($this->container);
+        $projectMetadataModel = new ProjectMetadataModel($this->container);
 
         $this->assertEquals(2, $userModel->create(array('username' => 'me', 'email' => 'me@localhost')));
 
