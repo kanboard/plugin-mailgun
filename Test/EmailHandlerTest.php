@@ -5,6 +5,7 @@ require_once 'tests/units/Base.php';
 use Kanboard\Plugin\Mailgun\EmailHandler;
 use Kanboard\Model\TaskFinderModel;
 use Kanboard\Model\ProjectModel;
+use Kanboard\Model\ProjectMetadataModel;
 use Kanboard\Model\ProjectUserRoleModel;
 use Kanboard\Model\UserModel;
 use Kanboard\Core\Security\Role;
