@@ -112,6 +112,7 @@ Changes
 -------
 
 ### Version 1.0.10
+
 - For unknown senders you can now accept them into a project by specifying a user to accept the task - this is configurable on a project level - leaving the setting blank will cause unknown senders to be ignored as they are now
 
 ### Version 1.0.9

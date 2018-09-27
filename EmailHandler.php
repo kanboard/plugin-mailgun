@@ -1,5 +1,4 @@
 <?php
-
 namespace Kanboard\Plugin\Mailgun;
 
 require_once __DIR__.'/vendor/autoload.php';
@@ -96,7 +95,6 @@ class EmailHandler extends Base implements ClientInterface
         }
 
         // The project must have a short name
-        //    DMM: Moved project check in front of user check - to support project unknown user mappings
         $project = $this->projectModel->getByEmail($payload['recipient']);
 
         if (empty($project)) {
@@ -107,12 +105,12 @@ class EmailHandler extends Base implements ClientInterface
         // The user must exists in Kanboard
         $user = $this->userModel->getByEmail($payload['sender']);
 
-	// Check to see if a catchall user was specified - if the original sender is unrecognized
-	if (empty($user)) {
+        // Check to see if a catchall user was specified - if the original sender is unrecognized
+        if (empty($user)) {
             $user_override = $this->projectMetadataModel->get($project['id'], 'MailgunProject_catchall'); //Find the catchall user E-Mail address
             $user = $this->userModel->getByEmail($user_override); //Load the user data for the catch all user
-	    $this->logger->info('Mailgun: unknown user mapped to ' . $user['name'] . ' (' . $user['email'] . ') in project ' . $project['name']);
-	}
+            $this->logger->info('Mailgun: unknown user mapped to ' . $user['name'] . ' (' . $user['email'] . ') in project ' . $project['name']);
+        }
 
         if (empty($user)) {
             $this->logger->info('Mailgun: ignored => user not found');

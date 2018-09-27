@@ -30,7 +30,6 @@ class MailgunProjectSettingsController extends BaseController
 
     public function save()
     {
-
 	    $values = $this->request->getValues();
 	    $errors = array();
 	    $project = $this->getProject();
@@ -42,6 +41,3 @@ class MailgunProjectSettingsController extends BaseController
     }
 
 }
-
-?>
-

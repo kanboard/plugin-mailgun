@@ -1,4 +1,4 @@
-<h3><img src="<?= $this->url->dir() ?>plugins/Mailgun/mailgun-icon.png"/>&nbsp;Mailgun Unknown ID mapping</h3>
+<h3><img src="<?= $this->url->dir() ?>plugins/Mailgun/mailgun-icon.png"/>&nbsp;<?= t('Mailgun Unknown ID mapping') ?></h3>
 <div class="panel">
     <?= $this->form->label(t('Set unknown senders to:'), 'MailgunProject_catchall') ?>
     <?= $this->form->text('MailgunProject_catchall', $values) ?>
