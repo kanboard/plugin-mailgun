@@ -87,6 +87,47 @@ class EmailHandlerTest extends Base
         $projectUserRoleModel = new ProjectUserRoleModel($this->container);
         $userModel = new UserModel($this->container);
         $taskFinderModel = new TaskFinderModel($this->container);
+
+        $this->assertEquals(2, $userModel->create(array('username' => 'me', 'email' => 'me@localhost')));
+        $this->assertEquals(3, $userModel->create(array('username' => 'anyone', 'email' => 'anyone@localhost')));
+
+        $this->assertEquals(1, $projectModel->create(array('name' => 'test1')));
+        $this->assertEquals(2, $projectModel->create(array('name' => 'test2', 'email' => 'test2@localhost')));
+
+        // Allow project 3 to receive E-Mail from any sender
+        $this->assertTrue($projectMetadataModel->save(3, array('MailgunProject_catchall' => 'anyone@localhost')));
+
+        // Empty payload
+        $this->assertFalse($emailHandler->receiveEmail(array()));
+
+        // Unknown user
+        $this->assertFalse($emailHandler->receiveEmail(array('sender' => 'a@b.c', 'subject' => 'Email task', 'recipient' => 'foobar', 'stripped-text' => 'boo')));
+
+        // Project not found
+        $this->assertFalse($emailHandler->receiveEmail(array('sender' => 'me@localhost', 'subject' => 'Email task', 'recipient' => 'test3@localhost', 'stripped-text' => 'boo')));
+
+        // User is not member
+        $this->assertFalse($emailHandler->receiveEmail(array('sender' => 'me@localhost', 'subject' => 'Email task', 'recipient' => 'test2@localhost', 'stripped-text' => 'boo')));
+        $this->assertTrue($projectUserRoleModel->addUser(2, 2, Role::PROJECT_MEMBER));
+
+        // The task must be created
+        $this->assertTrue($emailHandler->receiveEmail(array('sender' => 'me@localhost', 'subject' => 'Email task', 'recipient' => 'test2@localhost', 'stripped-html' => '<strong>boo</strong>')));
+
+        $task = $taskFinderModel->getById(1);
+        $this->assertNotEmpty($task);
+        $this->assertEquals(2, $task['project_id']);
+        $this->assertEquals('Email task', $task['title']);
+        $this->assertEquals('**boo**', $task['description']);
+        $this->assertEquals(2, $task['creator_id']);
+    }
+
+    public function testHandlePayloadFromAnyone()
+    {
+        $emailHandler = new EmailHandler($this->container);
+        $projectModel = new ProjectModel($this->container);
+        $projectUserRoleModel = new ProjectUserRoleModel($this->container);
+        $userModel = new UserModel($this->container);
+        $taskFinderModel = new TaskFinderModel($this->container);
         $projectMetadataModel = new ProjectMetadataModel($this->container);
 
         $this->assertEquals(2, $userModel->create(array('username' => 'me', 'email' => 'me@localhost')));
@@ -105,19 +146,15 @@ class EmailHandlerTest extends Base
         // Unknown user
         $this->assertFalse($emailHandler->receiveEmail(array('sender' => 'a@b.c', 'subject' => 'Email task', 'recipient' => 'foobar', 'stripped-text' => 'boo')));
 
-        // Unknown sender mapped to known user in project test4
-        $projectUserRoleModel->addUser(3, 3, Role::PROJECT_MEMBER);
-        $this->assertTrue($emailHandler->receiveEmail(array('sender' => 'd@e.f', 'subject' => 'Email task', 'recipient' => 'test4@localhost', 'stripped-text' => 'boo')));
-
         // Project not found
         $this->assertFalse($emailHandler->receiveEmail(array('sender' => 'me@localhost', 'subject' => 'Email task', 'recipient' => 'test3@localhost', 'stripped-text' => 'boo')));
 
         // User is not member
         $this->assertFalse($emailHandler->receiveEmail(array('sender' => 'me@localhost', 'subject' => 'Email task', 'recipient' => 'test2@localhost', 'stripped-text' => 'boo')));
-        $this->assertTrue($projectUserRoleModel->addUser(2, 2, Role::PROJECT_MEMBER));
+        $this->assertTrue($projectUserRoleModel->addUser(3, 3, Role::PROJECT_MEMBER));
 
         // The task must be created
-        $this->assertTrue($emailHandler->receiveEmail(array('sender' => 'me@localhost', 'subject' => 'Email task', 'recipient' => 'test2@localhost', 'stripped-html' => '<strong>boo</strong>')));
+        $this->assertTrue($emailHandler->receiveEmail(array('sender' => 'd@e.f', 'subject' => 'Email task', 'recipient' => 'test4@localhost', 'stripped-html' => '<strong>boo</strong>')));
 
         $task = $taskFinderModel->getById(1);
         $this->assertNotEmpty($task);
