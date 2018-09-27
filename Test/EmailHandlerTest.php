@@ -94,9 +94,6 @@ class EmailHandlerTest extends Base
         $this->assertEquals(1, $projectModel->create(array('name' => 'test1')));
         $this->assertEquals(2, $projectModel->create(array('name' => 'test2', 'email' => 'test2@localhost')));
 
-        // Allow project 3 to receive E-Mail from any sender
-        $this->assertTrue($projectMetadataModel->save(3, array('MailgunProject_catchall' => 'anyone@localhost')));
-
         // Empty payload
         $this->assertFalse($emailHandler->receiveEmail(array()));
 
