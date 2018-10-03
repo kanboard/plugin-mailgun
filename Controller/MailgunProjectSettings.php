@@ -20,7 +20,7 @@ class MailgunProjectSettingsController extends BaseController
         $this->response->html($this->helper->layout->project('MailgunProject:settings', array(
             'owners' => $this->projectUserRoleModel->getAssignableUsersList($project['id'], true),
 	    'values' => array(
-                'MailgunProject_catchall'   => $this->projectMetadataModel->get($project['id'], 'MailgunProject_catchall'),
+                'mailgun_catch_all'   => $this->projectMetadataModel->get($project['id'], 'mailgun_catch_all'),
                 'project_id' => $_REQUEST['project_id'],
 		),
             'project' => $project,
@@ -35,7 +35,7 @@ class MailgunProjectSettingsController extends BaseController
 	    $project = $this->getProject();
 	    $columnList =  $this->columnModel->getList($project['id']);
 
-	    $this->projectMetadataModel->save($project['id'], array('MailgunProject_catchall' => $values["MailgunProject_catchall"]));
+	    $this->projectMetadataModel->save($project['id'], array('mailgun_catch_all' => $values["mailgun_catch_all"]));
 
 	    return $this->show($values, $errors);
     }

@@ -107,7 +107,7 @@ class EmailHandler extends Base implements ClientInterface
 
         // Check to see if a catchall user was specified - if the original sender is unrecognized
         if (empty($user)) {
-            $user_override = $this->projectMetadataModel->get($project['id'], 'MailgunProject_catchall'); //Find the catchall user E-Mail address
+            $user_override = $this->projectMetadataModel->get($project['id'], 'mailgun_catch_all'); //Find the catchall user E-Mail address
             $user = $this->userModel->getByEmail($user_override); //Load the user data for the catch all user
             $this->logger->info('Mailgun: unknown user mapped to ' . $user['name'] . ' (' . $user['email'] . ') in project ' . $project['name']);
         }
