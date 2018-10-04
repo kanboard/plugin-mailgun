@@ -137,16 +137,7 @@ class EmailHandlerTest extends Base
         // Allow project 3 to receive E-Mail from any sender
         $this->assertTrue($projectMetadataModel->save(3, array('mailgun_catch_all' => 'anyone@localhost')));
 
-        // Empty payload
-        $this->assertFalse($emailHandler->receiveEmail(array()));
-
-        // Unknown user
-        $this->assertFalse($emailHandler->receiveEmail(array('sender' => 'a@b.c', 'subject' => 'Email task', 'recipient' => 'foobar', 'stripped-text' => 'boo')));
-
-        // Project not found
-        $this->assertFalse($emailHandler->receiveEmail(array('sender' => 'me@localhost', 'subject' => 'Email task', 'recipient' => 'test3@localhost', 'stripped-text' => 'boo')));
-
-        // User is not member
+        // Message is from a user not in a project - and should be mapped to the project user
         $this->assertFalse($emailHandler->receiveEmail(array('sender' => 'me@localhost', 'subject' => 'Email task', 'recipient' => 'test2@localhost', 'stripped-text' => 'boo')));
         $this->assertTrue($projectUserRoleModel->addUser(3, 3, Role::PROJECT_MEMBER));
 
