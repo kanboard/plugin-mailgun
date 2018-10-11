@@ -128,7 +128,7 @@ class EmailHandlerTest extends Base
 
         $this->assertEquals(2, $userModel->create(array('username' => 'anyone', 'email' => 'anyone@localhost')));
 
-        $this->assertEquals(1, $projectModel->create(array('name' => 'test1'));
+        $this->assertEquals(1, $projectModel->create(array('name' => 'test1')));
         $this->assertEquals(2, $projectModel->create(array('name' => 'test2', 'email' => 'test2@localhost')));
 
         // Allow project 2 to receive E-Mail from any sender
