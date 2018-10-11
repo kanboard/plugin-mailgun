@@ -4,7 +4,7 @@
     <?= $this->form->text('mailgun_catch_all', $values) ?>
 
     <p class="form-help">
-        <?= t('(NOTE: Blank value will cause unknown senders to be ignored)') ?><p>
+        <?= t('(NOTE: Blank value will cause unknown senders to be ignored)') ?>
         <a href="https://github.com/kanboard/plugin-mailgun#installation" target="_blank"><?= t('Help on Mailgun integration') ?></a>
     </p>
 
