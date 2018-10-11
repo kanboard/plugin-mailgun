@@ -126,7 +126,7 @@ class EmailHandlerTest extends Base
         $taskFinderModel = new TaskFinderModel($this->container);
         $projectMetadataModel = new ProjectMetadataModel($this->container);
 
-        $this->assertEquals(1, $userModel->create(array('username' => 'anyone', 'email' => 'anyone@localhost')));
+        $this->assertEquals(2, $userModel->create(array('username' => 'anyone', 'email' => 'anyone@localhost')));
 
         $this->assertEquals(1, $projectModel->create(array('name' => 'test1', 'email' => 'test1@localhost')));
 
@@ -135,7 +135,7 @@ class EmailHandlerTest extends Base
 
         // Message is from a user not in a project - and should be mapped to the project user
         $this->assertFalse($emailHandler->receiveEmail(array('sender' => 'me@localhost', 'subject' => 'Email task', 'recipient' => 'test2@localhost', 'stripped-text' => 'boo')));
-        $this->assertTrue($projectUserRoleModel->addUser(1, 1, Role::PROJECT_MEMBER));
+        $this->assertTrue($projectUserRoleModel->addUser(2, 1, Role::PROJECT_MEMBER));
 
         // The task must be created
         $this->assertTrue($emailHandler->receiveEmail(array('sender' => 'd@e.f', 'subject' => 'Email task', 'recipient' => 'test1@localhost', 'stripped-html' => '<strong>boo</strong>')));
