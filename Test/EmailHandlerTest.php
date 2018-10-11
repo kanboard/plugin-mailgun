@@ -143,10 +143,10 @@ class EmailHandlerTest extends Base
 
         $task = $taskFinderModel->getById(1);
         $this->assertNotEmpty($task);
-        $this->assertEquals(1, $task['project_id']);
+        $this->assertEquals(2, $task['project_id']);
         $this->assertEquals('Email task', $task['title']);
         $this->assertEquals('**boo**', $task['description']);
-        $this->assertEquals(1, $task['creator_id']);
+        $this->assertEquals(2, $task['creator_id']);
     }
 
     public function testGetSubject()
