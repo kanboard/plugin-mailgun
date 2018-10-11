@@ -128,17 +128,18 @@ class EmailHandlerTest extends Base
 
         $this->assertEquals(2, $userModel->create(array('username' => 'anyone', 'email' => 'anyone@localhost')));
 
-        $this->assertEquals(1, $projectModel->create(array('name' => 'test1', 'email' => 'test1@localhost')));
+        $this->assertEquals(1, $projectModel->create(array('name' => 'test1'));
+        $this->assertEquals(2, $projectModel->create(array('name' => 'test2', 'email' => 'test2@localhost')));
 
-        // Allow project 1 to receive E-Mail from any sender
-        $this->assertTrue($projectMetadataModel->save(1, array('mailgun_catch_all' => 'anyone@localhost')));
+        // Allow project 2 to receive E-Mail from any sender
+        $this->assertTrue($projectMetadataModel->save(2, array('mailgun_catch_all' => 'anyone@localhost')));
 
         // Message is from a user not in a project - and should be mapped to the project user
         $this->assertFalse($emailHandler->receiveEmail(array('sender' => 'me@localhost', 'subject' => 'Email task', 'recipient' => 'test2@localhost', 'stripped-text' => 'boo')));
-        $this->assertTrue($projectUserRoleModel->addUser(2, 1, Role::PROJECT_MEMBER));
+        $this->assertTrue($projectUserRoleModel->addUser(2, 2, Role::PROJECT_MEMBER));
 
         // The task must be created
-        $this->assertTrue($emailHandler->receiveEmail(array('sender' => 'd@e.f', 'subject' => 'Email task', 'recipient' => 'test1@localhost', 'stripped-html' => '<strong>boo</strong>')));
+        $this->assertTrue($emailHandler->receiveEmail(array('sender' => 'd@e.f', 'subject' => 'Email task', 'recipient' => 'test2@localhost', 'stripped-html' => '<strong>boo</strong>')));
 
         $task = $taskFinderModel->getById(1);
         $this->assertNotEmpty($task);
