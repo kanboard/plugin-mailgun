@@ -17,9 +17,10 @@ class Plugin extends Base
     public function initialize()
     {
         $this->emailClient->setTransport('mailgun', '\Kanboard\Plugin\Mailgun\EmailHandler');
+        $this->template->hook->attach('template:project:integrations', 'mailgun:project/integration');
         $this->template->hook->attach('template:config:integrations', 'mailgun:config/integration');
-        $this->route->addRoute('/mailgun/handler/:token', 'WebhookController', 'receiver', 'mailgun');
         $this->applicationAccessMap->add('WebhookController', 'receiver', Role::APP_PUBLIC);
+        $this->route->addRoute('/mailgun/handler/:token', 'WebhookController', 'receiver', 'mailgun');
     }
 
     public function onStartup()
@@ -39,7 +40,7 @@ class Plugin extends Base
 
     public function getPluginVersion()
     {
-        return '1.0.10';
+        return '1.0.11';
     }
 
     public function getPluginHomepage()

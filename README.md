@@ -111,6 +111,14 @@ Notes
 Changes
 -------
 
+### Version 1.0.11
+
+- For unknown senders you can now accept them into a project by specifying a user to accept the task - this is configurable on a project level - leaving the setting blank will cause unknown senders to be ignored.
+
+### Version 1.0.10
+
+- Update help link URL
+
 ### Version 1.0.9
 
 - Tasks created by incoming email are assigned to the recipient
